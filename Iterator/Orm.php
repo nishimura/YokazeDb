@@ -34,6 +34,7 @@ class YokazeDb_Iterator_Orm implements Iterator
     public function setParams($params)
     {
         $this->params = $params;
+        return $this;
     }
 
     public function getParams()
@@ -44,6 +45,7 @@ class YokazeDb_Iterator_Orm implements Iterator
     public function setOptions($options)
     {
         $this->options = $options;
+        return $this;
     }
 
     public function getOptions()
