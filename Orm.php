@@ -568,18 +568,18 @@ class YokazeDb_Orm
         else
             $isUpdate = false;
         foreach ($configs['columns'] as $propertyName => $columnName){
-            if (property_exists($vo, $propertyName) && (isset($vo->$pKeyVar) || isset($where))){
-                $params[] = $vo->$propertyName;
-                $columnNames[] = $columnName;
-            }elseif (isset($vo->$propertyName)){
-                $params[] = $vo->$propertyName;
-                $columnNames[] = $columnName;
-            }elseif (($propertyName === 'createdAt' && !$isUpdate)
-                     || $propertyName === 'updatedAt' && $isUpdate){
+            if (($propertyName === 'createdAt' && !$isUpdate)
+                     || ($propertyName === 'updatedAt' && $isUpdate)){
                 /*
                  * auto setting of timestamp
                  */
                 $params[] = date('Y-m-d H:i:s');
+                $columnNames[] = $columnName;
+            }elseif (property_exists($vo, $propertyName) && (isset($vo->$pKeyVar) || isset($where))){
+                $params[] = $vo->$propertyName;
+                $columnNames[] = $columnName;
+            }elseif (isset($vo->$propertyName)){
+                $params[] = $vo->$propertyName;
                 $columnNames[] = $columnName;
             }
         }
