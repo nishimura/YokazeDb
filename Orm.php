@@ -563,6 +563,10 @@ class YokazeDb_Orm
         // prepare data
         $columnNames = array();
         $params = array();
+        if (!$isForceInsert && (isset($vo->$pKeyVar) || isset($where)))
+            $isUpdate = true;
+        else
+            $isUpdate = false;
         foreach ($configs['columns'] as $propertyName => $columnName){
             if (property_exists($vo, $propertyName) && (isset($vo->$pKeyVar) || isset($where))){
                 $params[] = $vo->$propertyName;
@@ -570,7 +574,8 @@ class YokazeDb_Orm
             }elseif (isset($vo->$propertyName)){
                 $params[] = $vo->$propertyName;
                 $columnNames[] = $columnName;
-            }elseif ($propertyName == 'registTime' || $propertyName == 'updateTime'){
+            }elseif (($propertyName === 'createdAt' && !$isUpdate)
+                     || $propertyName === 'updatedAt' && $isUpdate){
                 /*
                  * auto setting of timestamp
                  */
@@ -592,7 +597,7 @@ class YokazeDb_Orm
         // when update, null property is null column
         // but when insert, not assign.
         //
-        if (!$isForceInsert && (isset($vo->$pKeyVar) || isset($where))){
+        if ($isUpdate){
             $columns = array();
             foreach ($columnNames as $columnName)
                 $columns[] = " $columnName = ? ";
