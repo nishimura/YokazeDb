@@ -18,23 +18,25 @@ require_once dirname(dirname(__FILE__)) . '/Vo.php';
 class YokazeDb_Iterator_View implements Iterator
 {
     protected $dao;
-    protected $sqlFile;
     protected $params;
     protected $replacements;
     protected $key;
     protected $vo;
     protected $isContinue;
 
-    public function __construct(YokazeDb_View $dao, $sqlFile)
+    public function __construct(YokazeDb_View $dao)
     {
-        $this->sqlFile = $sqlFile;
-        $this->setVo($dao->createVo($sqlFile));
+        $this->setVo($dao->createVo());
         $this->dao = $dao;
     }
 
     protected function setVo(YokazeDb_Vo $vo)
     {
         $this->vo = $vo;
+    }
+    public function getVo($params = null, $replace = null)
+    {
+        return $this->dao->getVo($params, $replace);
     }
 
     /**
@@ -60,7 +62,7 @@ class YokazeDb_Iterator_View implements Iterator
     }
 
     protected function getStatement(){
-        return $this->dao->prepareStmt($this->sqlFile, $this->params, $this->replacements);
+        return $this->dao->prepareStmt($this->params, $this->replacements);
     }
 
     protected function bind(PDOStatement $stmt, $vo){

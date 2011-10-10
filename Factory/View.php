@@ -28,8 +28,9 @@ class YokazeDb_Factory_View
             trigger_error($e->getMessage(), E_USER_ERROR);
         }
         require_once dirname(dirname(__FILE__)) . '/View.php';
-        $dao = new YokazeDb_View($db);
+        $dao = new YokazeDb_View($db, $sqlFile);
+
         require_once dirname(dirname(__FILE__)) . '/Iterator/View.php';
-        return new YokazeDb_Iterator_View($dao, $sqlFile);
+        return new YokazeDb_Iterator_View($dao);
     }
 }
