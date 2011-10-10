@@ -38,6 +38,16 @@ class YokazeDb_Iterator_View implements Iterator
     {
         return $this->dao->getVo($params, $replace);
     }
+    public function setLimit($limit)
+    {
+        $this->dao->setLimit($limit);
+        return $this;
+    }
+    public function setOffset($offset)
+    {
+        $this->dao->setOffset($offset);
+        return $this;
+    }
 
     /**
      * Set arguments of prepared statement.

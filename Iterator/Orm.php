@@ -25,10 +25,22 @@ class YokazeDb_Iterator_Orm implements Iterator
     protected $key;
     protected $vo;
     protected $isContinue;
+    private $limit;
+    private $offset;
     public function __construct(YokazeDb_Orm $orm)
     {
         $this->orm = $orm;
         $this->setVo($orm->createVo());
+    }
+    public function setLimit($limit)
+    {
+        $this->options['limit'] = $limit;
+        return $this;
+    }
+    public function setOffset($offset)
+    {
+        $this->options['offset'] = $offset;
+        return $this;
     }
 
     public function setParams($params)

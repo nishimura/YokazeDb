@@ -20,11 +20,23 @@ class YokazeDb_View
 {
     protected $db;
     protected $sqlFile;
+    private $limit;
+    private $offset;
 
     public function __construct(YokazeDb_Driver $db, $sqlFile)
     {
         $this->db = $db;
         $this->sqlFile = $sqlFile;
+    }
+    public function setLimit($limit)
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+    public function setOffset($offset)
+    {
+        $this->offset = $offset;
+        return $this;
     }
 
     /**
@@ -48,6 +60,10 @@ class YokazeDb_View
                 return false;
             }
         }
+        if (is_numeric($this->limit))
+            $sql .= ' limit ' . $this->limit . ' ';
+        if (is_numeric($this->offset))
+            $sql .= ' offset ' . $this->offset . ' ';
 
         if ($params !== null)
             $stmt = $this->db->query($sql, $params);
