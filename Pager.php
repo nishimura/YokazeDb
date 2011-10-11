@@ -68,7 +68,7 @@ class YokazeDb_Pager
         $last = (int)($this->count / $this->pageCount);
         if ($this->count % $this->pageCount == 0)
             $last--;
-        if ($last === 0)
+        if ($last <= 0)
             return '';
 
         $isFirst = $this->page == 0;
