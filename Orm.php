@@ -307,52 +307,16 @@ class YokazeDb_Orm
     /**
      * Create VO instance and initialize value and return that.
      *
-     * @param string $tableName
-     * @param string[] $data array(propertyName => value)
      * @return Object
      * @access public
      */
-    public function createVo($data = array()){
+    public function createVo(){
         if (!$this->tableName){
             trigger_error('Not defined table name.', E_USER_WARNING);
             return null;
         }
         
-        $obj = $this->_createVo($this->tableName);
-        if (!$obj)
-            return null;
-
-        if (!is_array($data) || $data === array())
-            return $obj;
-
-        $obj =  $this->setVoData($obj, $data);
-
-        return $obj;
-    }
-
-    /**
-     * Initialize VO values by array and return that.
-     *
-     * @param Object $class VO instance
-     * @param string[] $v data array
-     * @return bool
-     * @access public
-     */
-    public function setVoData(YokazeDb_Vo $vo, $data){
-        if (!isset($this->tables[$this->tableName]['columns'])){
-            trigger_error('Not defined table configuration.', E_USER_WARNING);
-            return $vo;
-        }
-
-        foreach ($this->tables[$this->tableName]['columns'] as $key => $value){
-            if (isset($data[$key])){
-                $vo->$key = $data[$key];
-            }else{
-                $vo->$key = null;
-            }
-        }
-
-        return $vo;
+        return $this->_createVo($this->tableName);
     }
 
     /**
@@ -459,65 +423,13 @@ class YokazeDb_Orm
     }
 
     /**
-     * Return VOs.
-     *
-     * @param array $options
-     * @return YokazeDb_Vo[]
-     * @access public
-     */
-    function getVos($options = array(), $params = array()){
-        $stmt = $this->getVosStatement($options, $params);
-
-        $vo = $this->createVo();
-        $this->bindColumns($stmt, $vo);
-
-        $vos = array();
-        while ($stmt->fetch(PDO::FETCH_BOUND)){
-            /*
-             * same instance by clone.
-             * foreach is double speed.
-             * serialize is fast.
-             */
-            $vos[] = unserialize(serialize($vo));
-        }
-
-        return $vos;
-    }
-
-    /**
-     * Return VOs by array.
-     *
-     * @param array $options
-     * @return array
-     * @access public
-     */
-    public function getVosArray($options = array()){
-        $stmt = $this->getVosStatement($options);
-
-        $this->bindColumns($stmt, $vo);
-
-        $vos = array();
-        while ($stmt->fetch(PDO::FETCH_BOUND)){
-            $vo = array();
-            foreach ($this->tables[$this->tableName]['columns'] as $key => $value){
-                $vo[$value] = $$key;
-            }
-            $vos[] = $vo;
-        }
-
-        return $vos;
-    }
-
-    /**
      * Bind for iterator.
-     *
-     * ==check== TODO: remove 'get' from method name.
      *
      * @param PDOStatement $stmt
      * @param array columns property name of columns.
      * @access public
      */
-    public function getBindArray($stmt, $vo, $columns = null){
+    public function bindArray($stmt, $vo, $columns = null){
         if (is_string($columns))
             $columns = (array)$columns;
 

@@ -75,9 +75,9 @@ class YokazeDb_Iterator_Orm implements Iterator
         return $this->orm->getVosStatement($this->getOptions(), $this->getParams());
     }
 
-    protected function getBindArray(PDOStatement $stmt, YokazeDb_Vo $vo)
+    protected function bindArray(PDOStatement $stmt, YokazeDb_Vo $vo)
     {
-        return $this->orm->getBindArray($stmt, $vo, $this->columns);
+        return $this->orm->bindArray($stmt, $vo, $this->columns);
     }
 
     public function rewind(){
@@ -89,7 +89,7 @@ class YokazeDb_Iterator_Orm implements Iterator
 
         if (!is_object($this->vo))
             $this->vo = new StdClass;
-        $this->getBindArray($this->stmt, $this->vo);
+        $this->bindArray($this->stmt, $this->vo);
         $this->key = 0;
         $this->isContinue = $this->stmt->fetch(PDO::FETCH_BOUND);
     }
