@@ -142,7 +142,7 @@ abstract class YokazeDb_Driver
 
         if ($stmt->errorCode() != '00000'){
             $errInfo = $stmt->errorInfo();
-            trigger_error('['.$errInfo[0].':'.$errInfo[1].']'.$errInfo[2], E_USER_WARNING);
+            trigger_error($sql . '['.$errInfo[0].':'.$errInfo[1].']'.$errInfo[2], E_USER_WARNING);
         }
 
         return $stmt;

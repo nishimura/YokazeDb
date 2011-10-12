@@ -200,7 +200,7 @@ class YokazeDb_Orm
             foreach ($value as $key => $columnType){
                 list($column, $type) = explode(':', $columnType);
                 $columns[$key] = $column;
-                $types[$key]   = $type;
+                $types[$key]   = (int)$type;
             }
             $this->tables[$tableName]['columns']   = $columns;
             $this->tables[$tableName]['types']     = $types;
@@ -475,7 +475,18 @@ class YokazeDb_Orm
         // prepare data
         $columnNames = array();
         $params = array();
-        if (!$isForceInsert && (isset($vo->$pKeyVar) || isset($where)))
+        foreach ($configs['columns'] as $propertyName => $columnName){
+            if (!isset($vo->$propertyName))
+                continue;
+
+            if ($vo->$propertyName === '' &&
+                $this->getColumnType($propertyName) == PDO::PARAM_INT)
+                    $vo->$propertyName = null;
+            else if ($vo->$propertyName === false &&
+                     $this->getColumnType($propertyName) == PDO::PARAM_BOOL)
+                $vo->$propertyName = 'false';
+        }
+        if (!$isForceInsert &&(isset($vo->$pKeyVar) || isset($where)))
             $isUpdate = true;
         else
             $isUpdate = false;
@@ -486,9 +497,6 @@ class YokazeDb_Orm
                  * auto setting of timestamp
                  */
                 $params[] = date('Y-m-d H:i:s');
-                $columnNames[] = $columnName;
-            }elseif (property_exists($vo, $propertyName) && (isset($vo->$pKeyVar) || isset($where))){
-                $params[] = $vo->$propertyName;
                 $columnNames[] = $columnName;
             }elseif (isset($vo->$propertyName)){
                 $params[] = $vo->$propertyName;
@@ -889,20 +897,20 @@ class YokazeDb_Orm
     /**
      * Return column type information.
      *
-     * @param string $columnName
+     * @param string $propertyName
      */
-    public function getColumnType($columnName){
+    public function getColumnType($propertyName){
         if (!isset($this->tableName)){
             trigger_error('Not defined table configuration.', E_USER_WARNING);
             return;
         }
 
-        if (!isset($this->tables[$this->tableName]['types'][$columnName])){
+        if (!isset($this->tables[$this->tableName]['types'][$propertyName])){
             trigger_error('Not defined type information.', E_USER_WARNING);
             return;
         }
 
-        return $this->tables[$this->tableName]['types'][$columnName];
+        return $this->tables[$this->tableName]['types'][$propertyName];
     }
 
     /**

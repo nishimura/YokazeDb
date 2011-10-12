@@ -80,6 +80,10 @@ WHERE relkind in ('r','v') AND (c.relname=? or c.relname = lower(?))
                 $type = PDO::PARAM_INT;
                 break;
 
+            case 'bool':
+                $type = PDO::PARAM_BOOL;
+                break;
+
             default:
                 $type = PDO::PARAM_STR;
                 break;
